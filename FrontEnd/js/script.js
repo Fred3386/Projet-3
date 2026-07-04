@@ -3,18 +3,18 @@ console.log(galerie);
 
 fetch("http://localhost:5678/api/works")
     .then(response => response.json())
-    .then(travaux => {
+    .then(works => {
 
-        travaux.forEach(travail => {
+        works.forEach(project => {
 
             const figure = document.createElement("figure");
 
             const image = document.createElement("img");
-            image.src = travail.imageUrl;
-            image.alt = travail.title;
+            image.src = project.imageUrl;
+            image.alt = project.title;
 
             const figcaption = document.createElement("figcaption");
-            figcaption.textContent = travail.title;
+            figcaption.textContent = project.title;
 
             figure.appendChild(image);
             figure.appendChild(figcaption);
