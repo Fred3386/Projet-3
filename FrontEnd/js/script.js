@@ -24,4 +24,19 @@ const filtres = document.querySelector(".filters");
     boutonTous.textContent = "Tous";
     filtres.appendChild(boutonTous);
 
+fetch("http://localhost:5678/api/categories")
+    .then(response => response.json())
+    .then(categories => {
+
+        categories.forEach(categorie => {
+
+            const bouton = document.createElement("button");
+            bouton.textContent = categorie.name;
+
+            filtres.appendChild(bouton);
+
+        });
+
+    });
+
 
