@@ -52,6 +52,7 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: rgba(255, 254, 248, 1);
 }
 header {
 	display: flex;
@@ -204,9 +205,61 @@ input[type="submit"]{
 	border-radius: 60px ;
 }
 
-footer nav ul {
-	display: flex;
-	justify-content: flex-end;
-	margin: 2em
+footer {
+	background-color: rgba(255, 255, 255, 1);
+	height: 60px;
 }
+
+footer nav {
+	display: flex;
+	align-items: center;
+	height: 100%;
+	justify-content: flex-end;
+	margin-right: 107px;
+}
+
+footer li {
+	font-family: Work Sans;
+	font-weight: 300;
+	font-style: Light;
+	font-size: 14px;
+	line-height: 100%;
+	letter-spacing: 0%;
+	width: 109px;
+	white-space: nowrap;
+}
+
+
+
+
+/* login page */
+
+#login {
+	margin-bottom: 355px;
+}
+#login h2{
+	text-align: center;
+	margin-bottom: 37px;
+}
+#login form {
+	display: flex;
+	flex-direction: column;
+	width: 379px;
+	margin: auto;
+	text-align: left;
+}
+
+#login input {
+	height: 51px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	margin-bottom: 30px;
+	margin-top: 7px;	
+}
+
+#login a {
+	text-align: center;
+}
+
 

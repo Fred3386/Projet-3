@@ -8,10 +8,8 @@ function getData(endpoint) {
         .then(response => response.json());
 }
 
-let projects = [];
-
-function afficherProjets(projects) {
-    galerie.innerHTML = ""; // Clear existing projects
+function displayProjets(projects) {
+    galerie.innerHTML = ""; 
     projects.forEach(project => {
         let figure = document.createElement("figure");
         let image = document.createElement("img");
@@ -25,8 +23,8 @@ function afficherProjets(projects) {
     });
 }
 
-function afficherCategories(endpoint) {
-    getData(endpoint).then(categories => {
+function displayCategories() {
+    getData("categories").then(categories => {
         categories.forEach(categorie => {
             const button = document.createElement("button");
             button.textContent = categorie.name;
@@ -36,7 +34,7 @@ function afficherCategories(endpoint) {
                 button.classList.add("active");
                 const id = button.dataset.categoryId;
                 const filteredProjects = projects.filter(project => project.categoryId == id);
-                afficherProjets(filteredProjects);
+                displayProjets(filteredProjects);
             });
             filters.appendChild(button);
         });
@@ -51,21 +49,21 @@ function removeActiveClass() {
 const buttonAll = document.createElement("button");
 buttonAll.textContent = "Tous";
 buttonAll.classList.add("active");
-
 buttonAll.addEventListener("click", () => {
     removeActiveClass();
     buttonAll.classList.add("active");
-    afficherProjets(projects);
+    displayProjets(projects);
 });
-
 filters.appendChild(buttonAll);
+
+displayCategories();
 
 getData("works").then(data => {
     projects = data;
-    afficherProjets(projects);
+    displayProjets(projects);
 });
 
-afficherCategories("categories");
+
 
 
 
