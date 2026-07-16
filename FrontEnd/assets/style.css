@@ -89,15 +89,24 @@ nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
-
 }
+
+
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
+	text-decoration: none;
 }
+
+nav a, a:visited  {
+    text-decoration: none;
+	color: inherit;
+}
+
 
 li:hover {
 	color: #B1663C;
+	
 }
 #introduction {
 	display: flex;
@@ -145,7 +154,7 @@ li:hover {
 	border-radius: 60px ;
 }
 
-.filters button:active {
+.filters button.active {
 	background-color: #1D6154;
 	color: white;
 }
@@ -160,8 +169,12 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
 }
+
+.gallery figcaption {
+    margin-top: 7px;
+}
+
 #contact {
 	width: 50%;
 	margin: auto;
@@ -261,5 +274,6 @@ footer li {
 #login a {
 	text-align: center;
 }
+
 
 

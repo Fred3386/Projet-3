@@ -1,6 +1,7 @@
 
 // Récupération des projets depuis l'API et affichage dans la galerie//
 const galerie = document.querySelector(".gallery");
+let projects = [];
 const filters = document.querySelector(".filters");
 
 function getData(endpoint) {
@@ -9,9 +10,9 @@ function getData(endpoint) {
 }
 
 function displayProjets(projects) {
-    galerie.innerHTML = ""; 
     projects.forEach(project => {
         let figure = document.createElement("figure");
+        figure.dataset.categoryId = project.categoryId;
         let image = document.createElement("img");
         image.src = project.imageUrl;
         image.alt = project.title;
@@ -23,45 +24,72 @@ function displayProjets(projects) {
     });
 }
 
-function displayCategories() {
-    getData("categories").then(categories => {
-        categories.forEach(categorie => {
-            const button = document.createElement("button");
-            button.textContent = categorie.name;
-            button.dataset.categoryId = categorie.id;
-            button.addEventListener("click", () => {
-                removeActiveClass();
-                button.classList.add("active");
-                const id = button.dataset.categoryId;
-                const filteredProjects = projects.filter(project => project.categoryId == id);
-                displayProjets(filteredProjects);
-            });
-            filters.appendChild(button);
+function displayCategories(categories) {
+    categories.forEach(category => {
+        let button = document.createElement("button");
+        button.textContent = category.name;
+        button.dataset.categoryId = category.id;
+        filters.appendChild(button);
+        button.addEventListener("click", () => {       
+            removeActiveClass()    
+            button.classList.add("active");
+            filterProjects(button.dataset.categoryId);
         });
     });
 }
 
-function removeActiveClass() {
-    const buttons = document.querySelectorAll(".filters button");
-    buttons.forEach(btn => btn.classList.remove("active"));
+function filterProjects(categoryId) {
+    const figures = galerie.querySelectorAll("figure");
+    figures.forEach(figure => {
+        if (figure.dataset.categoryId === categoryId || categoryId === "all") {
+            figure.style.display = "";
+        } else {
+            figure.style.display = "none";
+        }
+    });
 }
 
-const buttonAll = document.createElement("button");
-buttonAll.textContent = "Tous";
-buttonAll.classList.add("active");
-buttonAll.addEventListener("click", () => {
+function removeActiveClass() {
+    const buttons = document.querySelectorAll("button");
+    buttons.forEach(button => button.classList.remove("active"));
+}
+
+getData("works").then(works => {
+    projects = works;
+    displayProjets(projects);
+});
+
+getData("categories").then(categories => {
+    displayCategories(categories);
+});
+
+const buttonAllCategories = document.querySelector(".buttonAllCategories");
+
+buttonAllCategories.classList.add("active");
+
+buttonAllCategories.addEventListener("click", () => { 
     removeActiveClass();
-    buttonAll.classList.add("active");
-    displayProjets(projects);
+    buttonAllCategories.classList.add("active");
+    filterProjects("all"); 
 });
-filters.appendChild(buttonAll);
 
-displayCategories();
 
-getData("works").then(data => {
-    projects = data;
-    displayProjets(projects);
-});
+const token = localStorage.getItem("token");
+console.log(token)
+
+if (token) {
+    const loginButton = document.querySelector(".loginButton")
+    loginButton.textContent = "Logout"
+    loginButton.addEventListener("click", () =>{
+        event.preventDefault();
+        localStorage.removeItem("token");
+        window.location.reload();
+    })
+    console.log("Utilisateur connecté");
+} else {
+    console.log("Utilisateur non connecté");
+}
+
 
 
 
