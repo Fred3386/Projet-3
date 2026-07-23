@@ -9,10 +9,34 @@ function getData(endpoint) {
         .then(response => response.json());
 }
 
+async function checkToken() {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+        return false;
+    }
+    try {
+        const response = await fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        if (response.status === 401) {
+            sessionStorage.removeItem("token");
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}
+
 function displayProjets(projects) {
     projects.forEach(project => {
         let figure = document.createElement("figure");
         figure.dataset.categoryId = project.categoryId;
+        figure.dataset.id = project.id;
         let image = document.createElement("img");
         image.src = project.imageUrl;
         image.alt = project.title;
@@ -21,6 +45,25 @@ function displayProjets(projects) {
         figure.appendChild(image);
         figure.appendChild(figcaption);
         galerie.appendChild(figure);
+    });
+}
+const modalGallery = document.querySelector(".modal-gallery");
+function displayModalProjects(projects) {
+    projects.forEach(project => {
+        const figure = document.createElement("figure");
+        figure.dataset.categoryId = project.categoryId;
+        figure.dataset.id = project.id;
+        const img = document.createElement("img");
+        img.src = project.imageUrl;
+        img.alt = project.title;
+        const deleteButton = document.createElement("button");
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+        deleteButton.addEventListener("click", () => {
+            deleteProject(project.id, figure);
+        });
+        figure.appendChild(img);
+        figure.appendChild(deleteButton);
+        modalGallery.appendChild(figure);
     });
 }
 
@@ -57,6 +100,7 @@ function removeActiveClass() {
 getData("works").then(works => {
     projects = works;
     displayProjets(projects);
+    displayModalProjects(projects);
 });
 
 getData("categories").then(categories => {
@@ -73,22 +117,63 @@ buttonAllCategories.addEventListener("click", () => {
     filterProjects("all"); 
 });
 
-
-const token = localStorage.getItem("token");
-console.log(token)
-
-if (token) {
-    const loginButton = document.querySelector(".loginButton")
-    loginButton.textContent = "Logout"
-    loginButton.addEventListener("click", () =>{
-        event.preventDefault();
-        localStorage.removeItem("token");
-        window.location.reload();
-    })
-    console.log("Utilisateur connecté");
-} else {
-    console.log("Utilisateur non connecté");
+//Edition mode
+async function editionMode() {
+    const isAuthenticated = await checkToken();
+    if (isAuthenticated) {
+        const loginButton = document.querySelector(".loginButton");
+        const editionBanner = document.querySelector(".editionBanner");
+        const modifyButton = document.querySelector(".modify");
+        const projectTitle = document.querySelector(".projects-title")
+        editionBanner.classList.add("visible")
+        loginButton.textContent = "logout";
+        filters.classList.add("hidden");
+        modifyButton.style.display = "flex";
+        projectTitle.classList.add("edition")
+        loginButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            sessionStorage.removeItem("token");
+            window.location.reload();
+        });
+        console.log("Utilisateur connecté");
+    } else {
+        console.log("Utilisateur non connecté");
+    }
 }
+
+async function deleteProject(id, figure) {
+    const token = sessionStorage.getItem("token");
+    const response = await fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if (response.ok) {
+        figure.remove();
+    } else {
+        console.log("Erreur suppression");
+    }
+}
+
+editionMode();
+
+const modal = document.querySelector(".modal");
+const modifyButton = document.querySelector(".modify");
+const closeModal = document.querySelector(".close-modal");
+
+modifyButton.addEventListener("click", () => {
+    modal.style.display = "flex";
+});
+modal.addEventListener("click", () => {
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+});
+closeModal.addEventListener("click", () => {
+    modal.style.display = "none";
+});
+
 
 
 

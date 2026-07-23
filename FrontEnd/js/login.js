@@ -18,11 +18,10 @@ loginForm.addEventListener("submit", async (event) => {
 })
     if (response.ok) {
         const data = await response.json();  
-        localStorage.setItem("token", data.token);
+        sessionStorage.setItem("token", data.token);
         window.location.href = "index.html";      
     } else {
-        errorMessage.textContent = "Email ou mot de passe incorrect"
-        
+        errorMessage.textContent = "Email ou mot de passe incorrect"    
     }
 })
 
